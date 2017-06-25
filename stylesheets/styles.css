@@ -1,0 +1,42 @@
+@font-face {
+    font-family: dosfont;
+    src: url(../images/DOSVGA.ttf);
+    font-weight:400;
+}
+
+h1 {
+  font-family: dosfont, sans-serif;
+  color: white;
+  text-align: center;
+}
+
+body {
+  background: #0205ED;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  text-align: center;
+}
+
+#game-container {
+  border: 12px solid #B10001;
+  display: inline-block;
+}
+
+.row {
+  overflow: hidden;
+}
+
+.game-squares {
+  width: 16px;
+  height: 12px;
+  background: #0205ED;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  float: left;
+}
+
+.snake {
+  background: #fefd4d;
+}

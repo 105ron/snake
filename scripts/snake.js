@@ -8,17 +8,21 @@ let snake = {
   current: [[26, 21], [27,21], [28,21], [29,21]],
 };
 
-const coordinatesToClass = function coordinatesToClass(position) {
+const coordinatesToDiv = function coordinatesToDiv(position) {
   let gridCoordinates = `${ position[0] }-${ position[1] }`;
   //return the div element with the class
   return document.getElementsByClassName(gridCoordinates);
 };
 
+const toggleSnakeClass = function toggleSnakeClass(coordinates) {
+  let changeClassDiv = coordinatesToDiv(coordinates);
+  //each grid co-ordinate is unique. snakeDiv.length == 1 so we want to change the class on element[0]
+  changeClassDiv[0].classList.toggle('snake');
+};
+
 const drawSnake = function drawSnake() {
-  snake.current.forEach( (cordinates) => {
-    let snakeDiv = coordinatesToClass(cordinates);
-    //each grid co-ordinate is unique. snakeDiv.length == 1 so we want to change the class on element[0]
-    snakeDiv[0].classList.toggle('snake');
+  snake.current.forEach( (coordinates) => {
+    toggleSnakeClass(coordinates)
   });
 };
 
@@ -30,6 +34,7 @@ Array.prototype.SumArray = function (arr) {
   }
 
 const moveHead = function moveHead(coordinates, shift) {
+  //we input the head co-ordinate and direction then add the arrays together to move the snake
   const direction = {
     right: [1, 0],
     left: [-1, 0],
@@ -45,6 +50,8 @@ const moveSnake = function moveSnake() {
   let current = snake.current;
   let newCordinates = [...current, [...headCordinates]];
   newCordinates.splice(0,1);
+  toggleSnakeClass(headCordinates); //draw the head
+  toggleSnakeClass(current[0]); //erase the tail
   snake.current = newCordinates;
   return newCordinates;
 };

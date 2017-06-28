@@ -8,6 +8,25 @@ let snake = {
   current: [[26, 21], [27,21], [28,21], [29,21]],
 };
 
+document.onkeydown = function(evt) {
+  const keys = {
+    37: 'left', //arrow keys
+    38: 'up',
+    39: 'right',
+    40: 'down',
+    65: 'left', //wasd keys
+    87: 'up',
+    68: 'right',
+    83: 'down'
+  };
+  evt = evt || window.event;
+  console.log(evt);
+  if (keys[evt.keyCode]) {
+      snake.direction = keys[evt.keyCode];
+      console.log(snake.direction);
+  }
+};
+
 const coordinatesToDiv = function coordinatesToDiv(position) {
   let gridCoordinates = `${ position[0] }-${ position[1] }`;
   //return the div element with the class

@@ -24,11 +24,23 @@ document.onkeydown = function(evt) {
     68: 'right',
     83: 'down'
   };
+  const illegalMoves = {
+    left: 'right',
+    right: 'left',
+    up: 'down',
+    down: 'up',
+  }
   evt = evt || window.event;
   console.log(evt);
   if (keys[evt.keyCode]) {
+    if ((illegalMoves[snake.direction]) != (keys[evt.keyCode])) {
+    console.log(keys[evt.keyCode] + "event");
+    console.log(illegalMoves[snake.direction]);
+    console.log(Boolean((illegalMoves[snake.direction]) != (keys[evt.keyCode])));
       snake.direction = keys[evt.keyCode];
-      console.log(snake.direction);
+  } else {
+    alert ('don\'t do that');
+  }
   }
 };
 

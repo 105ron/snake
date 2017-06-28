@@ -1,12 +1,17 @@
 'use strict';
-const gameContainer = document.getElementById('game-container');
 let row;
+let fps = 10;
+let now;
+let then = Date.now();
+let interval = 1000/fps;
+let delta;
 let snake = {
   position: [28,21],
   direction: "right",
   //this is the co-ordinates, goes tail --> head
   current: [[26, 21], [27,21], [28,21], [29,21]],
 };
+const gameContainer = document.getElementById('game-container');
 
 document.onkeydown = function(evt) {
   const keys = {
@@ -63,18 +68,6 @@ const moveHead = function moveHead(coordinates, shift) {
   return coordinates.SumArray(direction[shift]);
 };
 
-const moveSnake = function moveSnake() {
-  let headCordinates = snake.current[snake.current.length -1];
-  headCordinates = moveHead(headCordinates, snake.direction);
-  let current = snake.current;
-  let newCordinates = [...current, [...headCordinates]];
-  newCordinates.splice(0,1);
-  toggleSnakeClass(headCordinates); //draw the head
-  toggleSnakeClass(current[0]); //erase the tail
-  snake.current = newCordinates;
-  return newCordinates;
-};
-
 (function render() {
   const gameGrid = Array.apply(null, Array(43)).map( (y, yIndex) => { 
     row = Array.apply(null, Array(56)).map( (x, xIndex) => {
@@ -85,5 +78,23 @@ const moveSnake = function moveSnake() {
   gameContainer.insertAdjacentHTML('afterbegin', gameGrid.join(''));
   drawSnake();
 })();
-
-window.requestAnimationFrame(moveSnake);
+  
+function move() { 
+    requestAnimationFrame(move);
+    now = Date.now();
+    delta = now - then;
+    if (delta > interval) {
+        then = now - (delta % interval);
+        // ... Code for Drawing the Frame ...
+        let headCordinates = snake.current[snake.current.length -1];
+        headCordinates = moveHead(headCordinates, snake.direction);
+        let current = snake.current;
+        let newCordinates = [...current, [...headCordinates]];
+        newCordinates.splice(0,1);
+        toggleSnakeClass(headCordinates); //draw the head
+        toggleSnakeClass(current[0]); //erase the tail
+        snake.current = newCordinates;
+    }
+}
+ 
+move();

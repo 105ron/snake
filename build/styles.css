@@ -30,8 +30,8 @@ body {
   height: 12px;
   background: #040169;
   box-sizing: border-box;
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
+  /*border-right: 1px solid black;
+  border-bottom: 1px solid black;*/
   float: left;
 }
 

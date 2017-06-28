@@ -85,3 +85,5 @@ const moveSnake = function moveSnake() {
   gameContainer.insertAdjacentHTML('afterbegin', gameGrid.join(''));
   drawSnake();
 })();
+
+window.requestAnimationFrame(moveSnake);

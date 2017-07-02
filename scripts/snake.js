@@ -5,7 +5,8 @@ let then = Date.now();
 let interval = 1000/fps;
 let delta;
 let row;
-let foodDiv;
+let food;
+let growSnake = 0
 let snake = {
   position: [28,21],
   direction: "right",
@@ -22,7 +23,7 @@ const getDiv = function getDiv(position) {
 
 const toggleClass = function toggleClass(coordinates, toggleClass) {
   let changeClassDiv = getDiv(coordinates);
-  //each grid co-ordinate is unique. snakeDiv.length == 1 so we want to change the class on element[0]
+  //each grid co-ordinate is unique. changeClassDiv.length == 1 so we want to change the class on element[0]
   changeClassDiv[0].classList.toggle(toggleClass);
 };
 
@@ -43,7 +44,6 @@ function getRandomNumber(max) {
 }
 
 const generateFoodCoordinates = function generateFoodCoordinates(snakeArray) { //maybe should pass params
-  let food = '';
   do {
     let x = getRandomNumber(55);
     let y = getRandomNumber(42);
@@ -53,10 +53,9 @@ const generateFoodCoordinates = function generateFoodCoordinates(snakeArray) { /
   return food;
 };
 
-const generateFood = function generateFood(CurrentSnake) {
-  console.log('it made it here');
-  let food = generateFoodCoordinates(CurrentSnake);
-  console.log(food);
+const generateFood = function generateFood() {
+  let food = generateFoodCoordinates(snake.current);
+
   toggleClass(food, 'food')
 };
 
@@ -87,7 +86,7 @@ const moveHead = function moveHead(coordinates, shift) {
   });
   gameContainer.insertAdjacentHTML('afterbegin', gameGrid.join(''));
   drawSnake();
-  generateFood(snake.current);
+  generateFood();
 })();
 
 document.onkeydown = function(evt) {
@@ -117,12 +116,23 @@ document.onkeydown = function(evt) {
 
 const moveSnake = function moveSnake(current, movedCordinates) {
   let newCordinates = [...current, [...movedCordinates]];
-  newCordinates.splice(0,1);
+  if (!growSnake) { newCordinates.splice(0,1) };
   toggleClass(movedCordinates, 'snake'); //draw the head
-  toggleClass(current[0], 'snake'); //erase the tail
+  if (growSnake) {
+    growSnake -= 1
+    fps += 0.1;
+    interval = 1000/fps;
+  } else {
+    toggleClass(current[0], 'snake')
+  };
   return newCordinates;
 };
 
+const isEatingFood = function isEatingFood(headCoordinates) {
+  if (isSameCoordinates(food, [headCoordinates])) { //we wrap headCoordinates because the function expects an array of arrays as a param
+    return true;
+  }
+};
 
 const isValidPosition = function isValidPosition(position, snakeArray) {
   if (getDiv(position).length < 1) { return false }; //snake is off the board
@@ -142,8 +152,14 @@ function move() {
       then = now - (delta % interval);
       let headCoordinates = snake.current[snake.current.length -1];
       headCoordinates = moveHead(headCoordinates, snake.direction);
-      if (isValidPosition(headCoordinates, snake.current)) {
-        // console.log(`${ headCoordinates } off the board`);
+      if (!isValidPosition(headCoordinates, snake.current)) {
+        //console.log(`${ headCoordinates } off the board`);
+      };
+      if (isEatingFood(headCoordinates)) {
+        growSnake = 4;
+        let foodDiv = getDiv(food);
+        toggleClass(food, 'food')
+        generateFood();
       };
       snake.current = moveSnake(snake.current, headCoordinates);
     }

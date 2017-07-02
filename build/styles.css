@@ -38,3 +38,12 @@ body {
 .snake {
   background: #fefd4d;
 }
+
+.food {
+  background: #B10001;
+  color: #bbb;
+}
+
+.food:before {
+  content: "*";
+}

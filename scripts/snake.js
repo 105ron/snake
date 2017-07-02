@@ -1,10 +1,11 @@
-//'use strict';
-let row;
+'use strict';
 let fps = 10;
 let now;
 let then = Date.now();
 let interval = 1000/fps;
 let delta;
+let row;
+let foodDiv;
 let snake = {
   position: [28,21],
   direction: "right",
@@ -19,16 +20,44 @@ const getDiv = function getDiv(position) {
   return document.getElementsByClassName(gridCoordinates);
 };
 
-const toggleSnakeClass = function toggleSnakeClass(coordinates) {
+const toggleClass = function toggleClass(coordinates, toggleClass) {
   let changeClassDiv = getDiv(coordinates);
   //each grid co-ordinate is unique. snakeDiv.length == 1 so we want to change the class on element[0]
-  changeClassDiv[0].classList.toggle('snake');
+  changeClassDiv[0].classList.toggle(toggleClass);
 };
 
 const drawSnake = function drawSnake() {
   snake.current.forEach( (coordinates) => {
-    toggleSnakeClass(coordinates)
+    toggleClass(coordinates, 'snake')
   });
+};
+
+const isSameCoordinates = function isSameCoordinates(position, snakeArray) {
+  return snakeArray.some( xAndY => 
+    xAndY.every( (x, i) => x === position[i])
+  );
+};
+
+function getRandomNumber(max) {
+  return Math.floor(Math.random() * max +1);
+}
+
+const generateFoodCoordinates = function generateFoodCoordinates(snakeArray) { //maybe should pass params
+  let food = '';
+  do {
+    let x = getRandomNumber(55);
+    let y = getRandomNumber(42);
+    food = [x, y]
+    console.log(food);
+  } while (isSameCoordinates(food, snakeArray)); //generate new numbers if food is where the snake is positioned
+  return food;
+};
+
+const generateFood = function generateFood(CurrentSnake) {
+  console.log('it made it here');
+  let food = generateFoodCoordinates(CurrentSnake);
+  console.log(food);
+  toggleClass(food, 'food')
 };
 
 Array.prototype.SumArray = function (arr) {
@@ -58,6 +87,7 @@ const moveHead = function moveHead(coordinates, shift) {
   });
   gameContainer.insertAdjacentHTML('afterbegin', gameGrid.join(''));
   drawSnake();
+  generateFood(snake.current);
 })();
 
 document.onkeydown = function(evt) {
@@ -88,23 +118,17 @@ document.onkeydown = function(evt) {
 const moveSnake = function moveSnake(current, movedCordinates) {
   let newCordinates = [...current, [...movedCordinates]];
   newCordinates.splice(0,1);
-  toggleSnakeClass(movedCordinates); //draw the head
-  toggleSnakeClass(current[0]); //erase the tail
+  toggleClass(movedCordinates, 'snake'); //draw the head
+  toggleClass(current[0], 'snake'); //erase the tail
   return newCordinates;
-};
-
-const isSameCoordinates = function isSameCoordinates(position, snakeArray) {
-  let body = [...snakeArray]
-  body.pop(); //remove head before we search for it's coordinates in it's positions
-  return body.some( xAndY => 
-    xAndY.every( (x, i) => x === position[i])
-  );
 };
 
 
 const isValidPosition = function isValidPosition(position, snakeArray) {
   if (getDiv(position).length < 1) { return false }; //snake is off the board
-  if (isSameCoordinates(position, snakeArray)) {
+  let body = [...snakeArray]
+  body.pop(); //remove head before we search for it's coordinates in it's positions
+  if (isSameCoordinates(position, body)) {
     console.log("clashing");
   }
   return true;

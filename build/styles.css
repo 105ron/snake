@@ -11,9 +11,32 @@ h1 {
 }
 
 body {
-  background: #0205ED;
+  background: #040169;
   box-sizing: border-box;
   text-align: center;
+}
+
+.scorebar-wrapper {
+  width: 920px;
+  background: #040169;
+  margin: auto;
+  overflow: hidden;
+}
+
+.scorebar {
+  color: #fff;
+  font-family: dosfont, sans-serif;
+  display: inline-block;
+  float: right;
+  font-size: 22px;
+}
+
+.score {
+  margin: 0 10px;
+}
+
+.arrows {
+  margin: 0 10px;
 }
 
 #game-container {

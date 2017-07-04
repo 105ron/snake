@@ -62,7 +62,6 @@ const generateFoodCoordinates = function generateFoodCoordinates(snakeArray) { /
     let x = getRandomNumber(55);
     let y = getRandomNumber(42);
     food = [x, y]
-    console.log(food);
   } while (isSameCoordinates(food, snakeArray)); //generate new numbers if food is where the snake is positioned
   return food;
 };

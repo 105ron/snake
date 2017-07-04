@@ -1,14 +1,16 @@
 'use strict';
-//add rows and columns to allow game board to change size
+const rows = 55;
+const columns = 42
 const gameContainer = document.getElementById('game-container');
 const scoreDiv = document.getElementById('score-number');
 const playerDiv = document.getElementById('player-name');
+//frame rate 
 let fps = 10;
 let now;
 let then = Date.now();
 let interval = 1000/fps;
 let delta;
-// variables about for setting frame rate of requestAnimationFrame
+// variables for setting frame rate of requestAnimationFrame
 let playerName = '';
 let score = 0
 let row;
@@ -59,8 +61,8 @@ function getRandomNumber(max) {
 
 const generateFoodCoordinates = function generateFoodCoordinates(snakeArray) { //maybe should pass params
   do {
-    let x = getRandomNumber(55);
-    let y = getRandomNumber(42);
+    let x = getRandomNumber(rows);
+    let y = getRandomNumber(columns);
     food = [x, y]
   } while (isSameCoordinates(food, snakeArray)); //generate new numbers if food is where the snake is positioned
   return food;
@@ -68,7 +70,6 @@ const generateFoodCoordinates = function generateFoodCoordinates(snakeArray) { /
 
 const generateFood = function generateFood() {
   let food = generateFoodCoordinates(snake.current);
-
   toggleClass(food, 'food')
 };
 
@@ -85,8 +86,8 @@ const moveHead = function moveHead(coordinates, shift) {
 };
 
 (function render() { //Immediately invoked function
-  const gameGrid = Array.apply(null, Array(43)).map( (y, yIndex) => { 
-    row = Array.apply(null, Array(56)).map( (x, xIndex) => {
+  const gameGrid = Array.apply(null, Array(columns +1)).map( (y, yIndex) => { 
+    row = Array.apply(null, Array(rows +1)).map( (x, xIndex) => {
       return `<div class="game-squares ${ xIndex }-${ yIndex }"></div>`;
     });
     return `<div class ="row">${ row.join('') }</div>`;
@@ -107,6 +108,7 @@ document.onkeydown = function(evt) {
     68: 'right',
     83: 'down'
   };
+
   const illegalMoves = {
     left: 'right', //don't allow 180 degree turns for the snake
     right: 'left',
@@ -178,8 +180,8 @@ const restartGame =  function restartGame() {
   snake.current = [[26, 21], [27,21], [28,21], [29,21]];
   drawSnake(snake.current) //redraw snake
   snake.direction = 'right';
-  let fps = 10;
-  let interval = 1000/fps;
+  fps = 10;
+  interval = 1000/fps;
 };
   
 function move() { 
@@ -197,6 +199,7 @@ function move() {
       snake.current = moveSnake(snake.current, headCoordinates);
     }
 }
+
 (function startNewGame() {
   let person = prompt('Please enter your name', 'Player1');
   person = person || 'Player1';

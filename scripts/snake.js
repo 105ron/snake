@@ -149,22 +149,38 @@ const updateScore = function updateScore() {
   scoreDiv.insertAdjacentHTML('afterbegin', scoreDisplay);
 };
 
-const addToTail = function addToTail() {
-  growSnake = 4;
-  let foodDiv = getDiv(food);
+const updateFood = function updateFood() {
   toggleClass(food, 'food') //remove the old food
   generateFood(); //make new food
   updateScore();
+};
+
+const addToTail = function addToTail() {
+  growSnake = 4;
+  let foodDiv = getDiv(food);
+  updateFood();
 };
 
 const isValidPosition = function isValidPosition(position, snakeArray) {
   if (getDiv(position).length < 1) { return false }; //snake is off the board
   let body = [...snakeArray]
   body.pop(); //remove head before we search for it's coordinates in it's positions
-  if (isSameCoordinates(position, body)) {
-    console.log("clashing"); // return false so we can reset the game...
-  }
+  if (isSameCoordinates(position, body)) { return false };
   return true;
+};
+
+const restartGame =  function restartGame() {
+  alert ('Game over, try again.')
+  drawSnake(snake.current) //undraw snake
+  score = 0;
+  updateFood();
+  scoreDiv.innerHTML = '';
+  scoreDiv.insertAdjacentHTML('afterbegin', '0000');
+  snake.current = [[26, 21], [27,21], [28,21], [29,21]];
+  drawSnake(snake.current) //redraw snake
+  snake.direction = 'right';
+  let fps = 10;
+  let interval = 1000/fps;
 };
   
 function move() { 
@@ -176,18 +192,17 @@ function move() {
       let headCoordinates = snake.current[snake.current.length -1];
       headCoordinates = moveHead(headCoordinates, snake.direction);
       if (!isValidPosition(headCoordinates, snake.current)) {
-        //console.log(`${ headCoordinates } off the board`);
+        restartGame();
       };
       if (isEatingFood(headCoordinates)) { addToTail() };
       snake.current = moveSnake(snake.current, headCoordinates);
     }
 }
 (function startNewGame() {
-  let person = prompt('Please enter your name', 'Player Name');
+  let person = prompt('Please enter your name', 'Player1');
   person = person || 'Player1';
   playerDiv.innerHTML = ''
   playerDiv.insertAdjacentHTML('afterbegin', person);
-  console.log(person);
   move();
 }());
  

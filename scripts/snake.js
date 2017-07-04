@@ -1,9 +1,15 @@
 'use strict';
+//add rows and columns to allow game board to change size
+const gameContainer = document.getElementById('game-container');
+const scoreDiv = document.getElementById('score-number');
 let fps = 10;
 let now;
 let then = Date.now();
 let interval = 1000/fps;
 let delta;
+// variables about for setting frame rate of requestAnimationFrame
+let playerName = '';
+let score = 0
 let row;
 let food;
 let growSnake = 0
@@ -11,15 +17,21 @@ let snake = {
   position: [28,21],
   direction: "right",
   //this is the co-ordinates, goes tail --> head
-  current: [[20, 21], [21,21], [22,21],[23, 21], [24,21], [25,21], [26, 21], [27,21], [28,21], [29,21]],
+  current: [[26, 21], [27,21], [28,21], [29,21]],
 };
-const gameContainer = document.getElementById('game-container');
 
 const getDiv = function getDiv(position) {
   let gridCoordinates = `${ position[0] }-${ position[1] }`;
   //return the div element with the class
   return document.getElementsByClassName(gridCoordinates);
 };
+
+Array.prototype.SumArray = function (arr) {
+  let sum = this.map(function (num, index) {
+    return num + arr[index];
+  });
+  return sum;
+}
 
 const toggleClass = function toggleClass(coordinates, toggleClass) {
   let changeClassDiv = getDiv(coordinates);
@@ -28,6 +40,7 @@ const toggleClass = function toggleClass(coordinates, toggleClass) {
 };
 
 const drawSnake = function drawSnake() {
+  //draw snake at beginning of game and remove the snake at end of game
   snake.current.forEach( (coordinates) => {
     toggleClass(coordinates, 'snake')
   });
@@ -59,12 +72,6 @@ const generateFood = function generateFood() {
   toggleClass(food, 'food')
 };
 
-Array.prototype.SumArray = function (arr) {
-    let sum = this.map(function (num, index) {
-      return num + arr[index];
-    });
-    return sum;
-  }
 
 const moveHead = function moveHead(coordinates, shift) {
   //we input the head co-ordinate and direction then add the arrays together to move the snake
@@ -77,7 +84,7 @@ const moveHead = function moveHead(coordinates, shift) {
   return coordinates.SumArray(direction[shift]);
 };
 
-(function render() {
+(function render() { //Immediately invoked function
   const gameGrid = Array.apply(null, Array(43)).map( (y, yIndex) => { 
     row = Array.apply(null, Array(56)).map( (x, xIndex) => {
       return `<div class="game-squares ${ xIndex }-${ yIndex }"></div>`;
@@ -101,7 +108,7 @@ document.onkeydown = function(evt) {
     83: 'down'
   };
   const illegalMoves = {
-    left: 'right',
+    left: 'right', //don't allow 180 degree turns for the snake
     right: 'left',
     up: 'down',
     down: 'up',
@@ -134,12 +141,27 @@ const isEatingFood = function isEatingFood(headCoordinates) {
   }
 };
 
+const updateScore = function updateScore() {
+  score += 100
+  scoreDiv.innerHTML = ''
+  let scoreDisplay = score < 1000 ? `0${ score }` : score;
+  scoreDiv.insertAdjacentHTML('afterbegin', scoreDisplay);
+};
+
+const addToTail = function addToTail() {
+  growSnake = 4;
+  let foodDiv = getDiv(food);
+  toggleClass(food, 'food') //remove the old food
+  generateFood(); //make new food
+  updateScore();
+};
+
 const isValidPosition = function isValidPosition(position, snakeArray) {
   if (getDiv(position).length < 1) { return false }; //snake is off the board
   let body = [...snakeArray]
   body.pop(); //remove head before we search for it's coordinates in it's positions
   if (isSameCoordinates(position, body)) {
-    console.log("clashing");
+    console.log("clashing"); // return false so we can reset the game...
   }
   return true;
 };
@@ -155,14 +177,12 @@ function move() {
       if (!isValidPosition(headCoordinates, snake.current)) {
         //console.log(`${ headCoordinates } off the board`);
       };
-      if (isEatingFood(headCoordinates)) {
-        growSnake = 4;
-        let foodDiv = getDiv(food);
-        toggleClass(food, 'food')
-        generateFood();
-      };
+      if (isEatingFood(headCoordinates)) { addToTail() };
       snake.current = moveSnake(snake.current, headCoordinates);
     }
 }
+const startNewGame = function startNewGame() {
+  
+};
  
 move();

@@ -2,6 +2,7 @@
 //add rows and columns to allow game board to change size
 const gameContainer = document.getElementById('game-container');
 const scoreDiv = document.getElementById('score-number');
+const playerDiv = document.getElementById('player-name');
 let fps = 10;
 let now;
 let then = Date.now();
@@ -144,7 +145,7 @@ const isEatingFood = function isEatingFood(headCoordinates) {
 const updateScore = function updateScore() {
   score += 100
   scoreDiv.innerHTML = ''
-  let scoreDisplay = score < 1000 ? `0${ score }` : score;
+  let scoreDisplay = score < 1000 ? `0${ score }` : score; //add leading zero to scores < 1000
   scoreDiv.insertAdjacentHTML('afterbegin', scoreDisplay);
 };
 
@@ -181,8 +182,12 @@ function move() {
       snake.current = moveSnake(snake.current, headCoordinates);
     }
 }
-const startNewGame = function startNewGame() {
-  
-};
+(function startNewGame() {
+  let person = prompt('Please enter your name', 'Player Name');
+  person = person || 'Player1';
+  playerDiv.innerHTML = ''
+  playerDiv.insertAdjacentHTML('afterbegin', person);
+  console.log(person);
+  move();
+}());
  
-move();
